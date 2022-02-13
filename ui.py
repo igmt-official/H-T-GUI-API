@@ -87,12 +87,15 @@ class HTInterface:
         self.existed_username = self.username_input.get()
         self.quantity = self.quantity_input.get()
 
-        self.new_token = None
+        self.new_token = ""
+
+        self.token_generator()
 
         self.window.mainloop()
 
     def create_user(self):
-        self.token_generator()
+
+        print(self.new_token)
 
         new_username = self.create_username_input.get()
         graph_id = self.create_graph_id_input.get()
@@ -142,19 +145,19 @@ class HTInterface:
             except:
                 messagebox.showerror(title="Invalid username", message="The input rule of username is `[a-z][a-z0-9-]{1,32}`.")
             else:
-                if graph_status["message"] == "This graphID already exist.":
-                    messagebox.showinfo(title="Oops", message="This graphID already exist.")
+                # if user_status["message"] == "This user already exist.":
+                #     messagebox.showinfo(title="Oops", message="This user already exist.")
+                if user_status["message"] == "Invalid username. The input rule of username is `[a-z][a-z0-9-]{1,32}`.":
+                    messagebox.showerror(title="Invalid username",
+                                         message="The input rule of username is `[a-z][a-z0-9-]{1,32}`.")
+                # if graph_status["message"] == "This graphID already exist.":
+                #     messagebox.showinfo(title="Oops", message="This graphID already exist.")
                 elif graph_status["message"] == "Invalid graphID. The input rule of graphID is `[a-z][a-z0-9-]{1,16}`.":
                     messagebox.showerror(title="Invalid graphID",
                                          message="The input rule of graphID is `[a-z][a-z0-9-]{1,16}`.")
                 elif graph_status["message"] == "The type you specify must be one of the following: int / float":
                     messagebox.showerror(title="Invalid Type",
-                                         message="The type you specify must be one of the following: int / float")
-                elif user_status["message"] == "This user already exist.":
-                    messagebox.showinfo(title="Oops", message="This user already exist.")
-                elif user_status["message"] == "Invalid username. The input rule of username is `[a-z][a-z0-9-]{1,32}`.":
-                    messagebox.showerror(title="Invalid username",
-                                         message="The input rule of username is `[a-z][a-z0-9-]{1,32}`.")
+                                             message="The type you specify must be one of the following: int / float")
                 else:
                     try:
                         # Append new data in json file
@@ -173,6 +176,7 @@ class HTInterface:
                             json.dump(data_file, data, indent=4)
                     finally:
                         messagebox.showinfo(title="Success", message="Added New Users.")
+                        self.token_generator()
 
     def token_generator(self):
         letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
@@ -183,8 +187,8 @@ class HTInterface:
         numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
         # List Comprehension
-        token_letters = [choice(letters) for item in range(randint(4, 64))]
-        token_numbers = [choice(numbers) for item in range(randint(4, 64))]
+        token_letters = [choice(letters) for item in range(randint(8, 16))]
+        token_numbers = [choice(numbers) for item in range(randint(8, 16))]
 
         # Combined all list into single list
         token_list = token_letters + token_numbers
